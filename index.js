@@ -24,7 +24,7 @@ sbtag.reserved = 255;
 
 sbtag.encode = function ( object, buf, offset ){
 	
-	buf = buf || Buffer(50);
+	buf = buf || Buffer(sbtag.bufferSize);
 	offset = offset || 0;
 	
 	// write magic number
