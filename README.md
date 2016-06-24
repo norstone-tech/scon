@@ -2,7 +2,7 @@ Swift Binary Tag (sbtag)
 =========
 
 A minimal node module allowing the reading and writing of data in the sbtag format.
-Get the module here [![npm version](https://badge.fury.io/js/ps2api.svg)](https://badge.fury.io/js/ps2api)
+Get the module here [![npm version](https://badge.fury.io/js/sbtag.svg)](https://badge.fury.io/js/sbtag)
 
 ## Installation
 
