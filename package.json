@@ -1,0 +1,24 @@
+{
+  "name": "sbtag",
+  "version": "1.0.0",
+  "description": "Read and write sbtag files",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JamesxX/sbtag.git"
+  },
+  "keywords": [
+    "sbtag",
+    "file",
+    "format"
+  ],
+  "author": "James R Swift <james.rt.swift@gmail.com>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/JamesxX/sbtag/issues"
+  },
+  "homepage": "https://github.com/JamesxX/sbtag#readme"
+}
