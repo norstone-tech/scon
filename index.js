@@ -149,9 +149,4 @@ sbtag.decode = function ( string, verify, offset ){
 	return { result: result, offset: _offset };
 }
 
-// test
-console.log( sbtag.encode( { hello: "world!", five: 5 } ) );
-console.log( sbtag.decode( sbtag.encode( { hello: "world!", five: 5 } ).result ) );
-
-
 module.exports = sbtag;
