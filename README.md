@@ -26,5 +26,6 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 
 ## Release History
 
+* 1.1.0 Major update in module structure, and added error handling.
 * 1.0.2 Removed left over tests.
 * 1.0.0 Initial release
