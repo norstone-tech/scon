@@ -18,8 +18,8 @@ sbtagUtil.loadSubmodule( sbtag, "lib/error.js" );
 sbtagUtil.loadSubmodule( sbtag, "lib/encode.js" );
 sbtagUtil.loadSubmodule( sbtag, "lib/decode.js" );
 
-if ( false ){
-	var encoded = sbtag.encode( { hello: "world!", five: 5 }, null, null, 100 );
+if ( true ){
+	var encoded = sbtag.encode( { hello: "world!", five: 5, test: {compound: 1.2} }, null, null, 100 );
 	console.log( "encoded:", encoded );
 
 	var decoded = sbtag.decode( encoded.result );
