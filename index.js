@@ -19,7 +19,7 @@ sbtagUtil.loadSubmodule( sbtag, "lib/encode.js" );
 sbtagUtil.loadSubmodule( sbtag, "lib/decode.js" );
 
 if ( true ){
-	var encoded = sbtag.encode( { hello: "world!", five: 5, test: {compound: 1.2} }, null, null, 100 );
+	var encoded = sbtag.encode( { hello: "world!", hi: "bye", five: 5, pi: 3.14159, six: 6 });
 	console.log( "encoded:", encoded );
 
 	var decoded = sbtag.decode( encoded.result );
