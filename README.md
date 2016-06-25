@@ -4,21 +4,21 @@ Swift-Cardinal Object Notation (SCON)
 A minimal node module allowing the reading and writing of data in the SCON format.
 The SCON format, created by Aritz J Beobide-Cardinal (ARitz Cracker) and James R Swift, is an extendable binary file format that was created to store data more efficiantly than the popular JSON standard.
 
-Get the module here [![npm version](https://badge.fury.io/js/sbtag.svg)](https://badge.fury.io/js/sbtag)
+Get the module here [![npm version](https://badge.fury.io/js/scon.svg)](https://badge.fury.io/js/scon)
 
 ## Installation
 
 ```shell
-npm install sbtag --save
+npm install scon --save
 ```
 
 ## Usage
 
 ```js
-var sbtag = require('sbtag');
+var scon = require('scon');
 
-var encoded = sbtag.encode( { hello: "world!", five: 5 } ).result;
-var decoded = sbtag.decode( encoded ).result;
+var encoded = scon.encode( { hello: "world!", five: 5 } ).result;
+var decoded = scon.decode( encoded ).result;
 ```
 
 ## Contributing

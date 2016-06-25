@@ -8,19 +8,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JamesxX/sbtag.git"
+    "url": "git+https://github.com/JamesxX/scon.git"
   },
   "keywords": [
-    "sbtag",
+    "scon",
     "file",
     "format"
   ],
   "author": "James R Swift <james.rt.swift@gmail.com>",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/JamesxX/sbtag/issues"
+    "url": "https://github.com/JamesxX/scon/issues"
   },
-  "homepage": "https://github.com/JamesxX/sbtag#readme",
+  "homepage": "https://github.com/JamesxX/scon#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^2.5.3"
