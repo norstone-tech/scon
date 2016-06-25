@@ -1,7 +1,9 @@
-Swift Binary Tag (sbtag)
+Swift-Cardinal Object Notation (SCON)
 =========
 
-A minimal node module allowing the reading and writing of data in the sbtag format.
+A minimal node module allowing the reading and writing of data in the SCON format.
+The SCON format, created by Aritz J Beobide-Cardinal (ARitz Cracker) and James R Swift, is an extendable binary file format that was created to store data more efficiantly than the popular JSON standard.
+
 Get the module here [![npm version](https://badge.fury.io/js/sbtag.svg)](https://badge.fury.io/js/sbtag)
 
 ## Installation
@@ -26,6 +28,8 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 
 ## Release History
 
-* 1.1.0 Major update in module structure, and added error handling.
-* 1.0.2 Removed left over tests.
-* 1.0.0 Initial release
+* 1.0.0 Added support for arrays, booleans, and nulls!
+* 0.9.2 ???
+* 0.9.0 Major update in module structure, and added error handling.
+* 0.8.2 Removed left over tests.
+* 0.8.0 Initial release
