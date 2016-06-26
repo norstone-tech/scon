@@ -8,6 +8,7 @@ The SCON format, created by Aritz J Beobide-Cardinal (ARitz Cracker) and James R
 [![NPM Downloads][downloads-image]][downloads-url]
 [![Node.js Version][node-version-image]][node-version-url]
 [![Build status](https://travis-ci.org/JamesxX/scon.svg)](https://travis-ci.org/JamesxX/scon)
+[![License](https://img.shields.io/npm/l/scon.svg?maxAge=2592000)]()
 
 ## Installation
 
