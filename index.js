@@ -8,9 +8,7 @@
 
 "use strict";
 
-var Buffer = require('buffer').Buffer;
-
-var scon = {}
+var scon = {};
 var sconUtil = require( "./lib/util.js" );
 
 sconUtil.loadSubmodule( scon, "lib/conf.js" );
