@@ -13,10 +13,16 @@ function testKeyValueEquality( key, obj1, obj2 ){
 			
 		});
 		
-	} else {
+	} else if  ( typeof obj1[ key ] == "number" && isNaN( obj1[ key ] ) ) {
+		
+		it( "Key " + key + " should have the same value in both objects (NaN)", function(){
+			expect( obj2[ key ] ).to.be.NaN;
+		});
+		
+	}else {
 		
 		it( "Key " + key + " should have the same value in both objects", function(){
-			expect( obj1[ key ] ).to.equal( obj2[ key ] )
+			expect( obj1[ key ] ).to.equal( obj2[ key ] );
 		});
 		
 	}
@@ -28,7 +34,7 @@ describe("Swift-Cardinal Object Notation file format", function() {
 	var testCase = {
 		hello: "world!!",
 		hi: "bye",
-		//five: NaN,
+		five: NaN,
 		pi: 3.14159,
 		object: {
 			amazing:true,
@@ -45,7 +51,7 @@ describe("Swift-Cardinal Object Notation file format", function() {
 	
 	it("should write the magic number", function(){
 		expect( encoded.result.substring( 0, scon.magicNumber.length ) ).to.equal( scon.magicNumber );
-	})
+	});
 	
 	describe( "testing equality of testCase and decoded object", function(){
 		
