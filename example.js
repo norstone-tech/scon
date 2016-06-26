@@ -14,4 +14,4 @@ var encoded = scon.encode( { hello: "world!!", hi: "bye", five: NaN, pi: 3.14159
 console.log( "encoded:", encoded );
 
 var decoded = scon.decode( encoded.result );
-console.log( "decoded:", decoded);
+console.log( "decoded:", decoded.result);
