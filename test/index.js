@@ -5,7 +5,7 @@ function testKeyValueEquality( key, obj1, obj2 ){
 	
 	if ( typeof obj1[ key ] == "object" ){
 		
-		describe( "Teting member object '" + key + "'", function(){
+		describe( "Testing member object '" + key + "'", function(){
 			
 			for (var subkey in obj1[key]) {
 				testKeyValueEquality( subkey, obj1[key], obj2[key] );
@@ -52,15 +52,15 @@ describe("Swift-Cardinal Object Notation file format", function() {
 	
 	var encoded = scon.encode( testCase );
 	
+	it("should write the magic number", function(){
+		expect( encoded.result.substring( 0, scon.magicNumber.length ) ).to.equal( scon.magicNumber );
+	});
+	
 	it( "should not throw errors when decoding", function(){
 		expect( function(){scon.decode( encoded.result )} ).to.not.throw( scon.Exception );
 	});
 	
 	var decoded = scon.decode( encoded.result );
-	
-	it("should write the magic number", function(){
-		expect( encoded.result.substring( 0, scon.magicNumber.length ) ).to.equal( scon.magicNumber );
-	});
 	
 	describe( "testing equality of testCase and decoded object", function(){
 		
