@@ -1,6 +1,6 @@
 {
   "name": "scon",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Read and write scon files",
   "main": "index.js",
   "scripts": {
