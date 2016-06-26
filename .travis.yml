@@ -5,7 +5,11 @@ node_js:
   - 4.4.5
   
 before_install:
-	npm install -g mocha
-	npm install -g chai
-	
+  - npm install -g mocha
+  - npm install -g chai
+
+branches:
+ only:
+   - master
+   - developer
 script: mocha
