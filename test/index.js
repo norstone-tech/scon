@@ -46,7 +46,16 @@ describe("Swift-Cardinal Object Notation file format", function() {
 		arr: ["wan","too","free",{"for":4},[1,2,3,4,5]]
 	};
 	
+	it( "should not throw errors when encoding", function(){
+		expect( function(){scon.encode( testCase )} ).to.not.throw( scon.Exception );
+	});
+	
 	var encoded = scon.encode( testCase );
+	
+	it( "should not throw errors when decoding", function(){
+		expect( function(){scon.decode( encoded.result )} ).to.not.throw( scon.Exception );
+	});
+	
 	var decoded = scon.decode( encoded.result );
 	
 	it("should write the magic number", function(){
