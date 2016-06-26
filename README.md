@@ -28,6 +28,7 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 
 ## Release History
 
+* 1.0.2 Added support for NaN
 * 1.0.0 Added support for arrays, booleans, and nulls!
 * 0.9.2 ???
 * 0.9.0 Major update in module structure, and added error handling.
