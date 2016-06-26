@@ -8,7 +8,7 @@ The SCON format, created by Aritz J Beobide-Cardinal (ARitz Cracker) and James R
 [![NPM Downloads][downloads-image]][downloads-url]
 [![Node.js Version][node-version-image]][node-version-url]
 
-Travis CI build status: ![Build status](https://travis-ci.org/JamesxX/scon.svg)
+Travis CI build status: [![Build status](https://travis-ci.org/JamesxX/scon.svg)](https://travis-ci.org/JamesxX/scon)
 ## Installation
 
 ```shell
