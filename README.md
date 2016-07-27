@@ -32,6 +32,7 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 
 ## Release History
 
+* 1.1.0 Ints now take up less bytes depending on how big they are. Also, bugfixes.
 * 1.0.3 Added TravisCI intergration and tests
 * 1.0.2 Added support for NaN and 64 bit floats
 * 1.0.0 Added support for arrays, booleans, and nulls!
