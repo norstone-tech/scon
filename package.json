@@ -1,6 +1,6 @@
 {
   "name": "scon",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "Read and write scon files",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,7 @@
     "file",
     "format"
   ],
-  "author": "James R Swift <james.rt.swift@gmail.com>",
+  "author": "James R Swift <james.rt.swift@gmail.com>; Aritz Beobide-Cardinal <aritz@aritzcracker.ca>",
   "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/JamesxX/scon/issues"
