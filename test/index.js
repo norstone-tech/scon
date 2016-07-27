@@ -43,8 +43,8 @@ describe("Swift-Cardinal Object Notation file format", function() {
 			}
 		},
 		six: 6,
-		uint16 = 1337,
-		int16 = -1337,
+		uint16: 1337,
+		int16: -1337,
 		array8: ["wan","too","free",{"for":4},[1,2,3,4,5]]
 	};
 	testCase["array16"] = [];
