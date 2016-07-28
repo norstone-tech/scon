@@ -2,7 +2,7 @@ Swift-Cardinal Object Notation (SCON)
 =========
 
 A minimal node module allowing the reading and writing of data in the SCON format.
-The SCON format, created by Aritz J Beobide-Cardinal (ARitz Cracker) and James R Swift, is an extendable binary file format that was created to store data more efficiantly than the popular JSON standard.
+The SCON format, created by Aritz J Beobide-Cardinal (ARitz Cracker) and James R Swift, is an extendable binary file format that was created to store data more efficiently than the popular JSON standard.
 
 [![NPM Version][npm-image]][npm-url]
 [![NPM Downloads][downloads-image]][downloads-url]
@@ -32,6 +32,7 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 
 ## Release History
 
+* 1.1.0 Ints now take up less bytes depending on how big they are. Also, bugfixes.
 * 1.0.3 Added TravisCI intergration and tests
 * 1.0.2 Added support for NaN and 64 bit floats
 * 1.0.0 Added support for arrays, booleans, and nulls!

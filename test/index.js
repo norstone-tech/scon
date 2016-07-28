@@ -32,19 +32,25 @@ function testKeyValueEquality( key, obj1, obj2 ){
 describe("Swift-Cardinal Object Notation file format", function() {
 	
 	var testCase = {
-		hello: "world!!",
-		hi: "bye",
-		five: NaN,
+		string8: "world!!",
+		string16: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam aliquam ante nec sem venenatis, vitae vehicula arcu malesuada. Ut eleifend tempus urna sed eleifend. Donec volutpat tristique condimentum. Ut et pharetra erat, quis elementum nulla. Nam eu elit vulputate ante ullamcorper dictum ac vel nunc. Sed cursus ornare odio vel vestibulum. Morbi sollicitudin maximus neque, ac sagittis odio laoreet non. Aliquam pretium, magna non porttitor molestie, ante sapien blandit magna, ut cursus nullam. ",
+		NotANumber: NaN,
 		pi: 3.14159,
 		object: {
-			amazing:true,
+			bool:true,
 			['true']: {
-				mind:"fuck"
+				nested:"objects"
 			}
 		},
 		six: 6,
-		arr: ["wan","too","free",{"for":4},[1,2,3,4,5]]
+		uint16: 1337,
+		int16: -1337,
+		array8: ["wan","too","free",{"for":4},[1,2,3,4,5]]
 	};
+	testCase["array16"] = [];
+	for (var i=0;i<300;i+=1){
+		testCase["array16"][i] = ["val"+i];
+	}
 	
 	it( "should not throw errors when encoding", function(){
 		expect( function(){scon.encode( testCase )} ).to.not.throw( scon.Exception );
