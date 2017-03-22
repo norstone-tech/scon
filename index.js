@@ -1,6 +1,6 @@
 /**
  * Swift-Cardinal Object Notation
- * https://github.com/JamesxX/scon
+ * https://github.com/BlueStone-Tech-Enterprises/scon/
  *
  * Copyright (c) Aritz Beobide-Cardinal, 2016 James R Swift
  * Licensed under the GNU GPLv3 license.
