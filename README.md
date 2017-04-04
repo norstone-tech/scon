@@ -21,8 +21,21 @@ npm install scon --save
 ```js
 var scon = require('scon');
 
-var encoded = scon.encode( { hello: "world!", five: 5 } ).result;
-var decoded = scon.decode( encoded ).result;
+// If you wish to encode binary data, use NodeJS Buffers or Uint8Arrays
+var encoded = scon.encode( { hello: "world!", five: 5 } );
+encoded instanceof Uint8Array; // true
+
+var decoded = scon.decode( encoded );
+```
+
+## Information for NodeJS use
+
+```
+// You can convert a Uint8Array to a NodeJS Buffer by doing the following:
+var buff = Buffer.from(encodedSCON.buffer)
+
+// Since (starting with NodeJS 4.X.X) NodeJS buffer objects are also instances of Uint8Array's, you can simply decode buffers
+var decoded = scon.decode( buff );
 ```
 
 ## Contributing
@@ -32,6 +45,15 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 
 ## Release History
 
+* 2.0.0 
+  * Now uses Uint8Array instead of NodeJS Buffer for browser support
+  * Now differentiates between human readable strings and byte arrays. Use Uint8Array to store binary data and Javascript strings to store utf8
+  * booleans are now stored more efficiently
+  * infinity/negative-infinity values are now stored more efficiently
+  * keys no longer take up an unnecessary byte.
+  * 0 values will now no-longer take up unnecessary space.
+  * scon.partialDecode added which allows for decoding partial scon files, documentation soon!
+  
 * 1.1.0 Ints now take up less bytes depending on how big they are. Also, bugfixes.
 * 1.0.3 Added TravisCI intergration and tests
 * 1.0.2 Added support for NaN and 64 bit floats
