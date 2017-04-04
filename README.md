@@ -21,10 +21,21 @@ npm install scon --save
 ```js
 var scon = require('scon');
 
+// If you wish to encode binary data, use NodeJS Buffers or Uint8Arrays
 var encoded = scon.encode( { hello: "world!", five: 5 } );
 encoded instanceof Uint8Array; // true
 
 var decoded = scon.decode( encoded );
+```
+
+## Information for NodeJS use
+
+```
+// You can convert a Uint8Array to a NodeJS Buffer by doing the following:
+var buff = Buffer.from(encodedSCON.buffer)
+
+// Since (starting with NodeJS 4.X.X) NodeJS buffer objects are also instances of Uint8Array's, you can simply decode buffers
+var decoded = scon.decode( buff );
 ```
 
 ## Contributing
