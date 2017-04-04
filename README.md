@@ -36,7 +36,7 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 
 * 2.0.0 
   * Now uses Uint8Array instead of NodeJS Buffer for browser support
-  * Now differentiates between humean readable strings and byte arrays. Use Uint8Array to store binary data and Javascript strings to store utf8
+  * Now differentiates between human readable strings and byte arrays. Use Uint8Array to store binary data and Javascript strings to store utf8
   * booleans are now stored more efficiently
   * infinity/negative-infinity values are now stored more efficiently
   * keys no longer take up an unnecessary byte.
