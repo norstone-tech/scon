@@ -8,8 +8,8 @@
 
 "use strict";
 
-var scon = {};
-var sconUtil = require( "./lib/util.js" );
+const scon = {};
+const sconUtil = require( "./lib/util.js" );
 
 sconUtil.loadSubmodule( scon, "lib/conf.js" );
 sconUtil.loadSubmodule( scon, "lib/error.js" );
