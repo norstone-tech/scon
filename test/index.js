@@ -6,8 +6,8 @@
  * Licensed under the GNU GPLv3 license.
  */
 
-var expect = require('chai').expect;
-var scon = require('../index.js');
+const expect = require('chai').expect;
+const scon = require('../index.js');
 
 function testKeyValueEquality( key, obj1, obj2 ){
 	
@@ -15,7 +15,7 @@ function testKeyValueEquality( key, obj1, obj2 ){
 		
 		describe( "Testing member object '" + key + "'", function(){
 			
-			for (var subkey in obj1[key]) {
+			for (let subkey in obj1[key]) {
 				testKeyValueEquality( subkey, obj1[key], obj2[key] );
 			}
 			
@@ -39,7 +39,7 @@ function testKeyValueEquality( key, obj1, obj2 ){
 
 describe("Swift-Cardinal Object Notation file format", function() {
 	
-	var testCase = {
+	const testCase = {
 		string8: "world!!",
 		string16: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam aliquam ante nec sem venenatis, vitae vehicula arcu malesuada. Ut eleifend tempus urna sed eleifend. Donec volutpat tristique condimentum. Ut et pharetra erat, quis elementum nulla. Nam eu elit vulputate ante ullamcorper dictum ac vel nunc. Sed cursus ornare odio vel vestibulum. Morbi sollicitudin maximus neque, ac sagittis odio laoreet non. Aliquam pretium, magna non porttitor molestie, ante sapien blandit magna, ut cursus nullam. ",
 		NotANumber: NaN,
@@ -56,7 +56,7 @@ describe("Swift-Cardinal Object Notation file format", function() {
 		array8: ["wan","too","free",{"for":4},[1,2,3,4,5]]
 	};
 	testCase["array16"] = [];
-	for (var i=0;i<300;i+=1){
+	for (let i=0;i<300;i+=1){
 		testCase["array16"][i] = ["val"+i];
 	}
 	
@@ -64,7 +64,7 @@ describe("Swift-Cardinal Object Notation file format", function() {
 		expect( function(){scon.encode( testCase )} ).to.not.throw( scon.Exception );
 	});
 	
-	var encoded = scon.encode( testCase );
+	const encoded = scon.encode( testCase );
 	
 	it("should write the magic number", function(){
 		expect( encoded.result.substring( 0, scon.magicNumber.length ) ).to.equal( scon.magicNumber );
@@ -74,11 +74,11 @@ describe("Swift-Cardinal Object Notation file format", function() {
 		expect( function(){scon.decode( encoded.result )} ).to.not.throw( scon.Exception );
 	});
 	
-	var decoded = scon.decode( encoded.result );
+	const decoded = scon.decode( encoded.result );
 	
 	describe( "testing equality of testCase and decoded object", function(){
 		
-		for (var key in testCase) {
+		for (let key in testCase) {
 			
 			testKeyValueEquality( key, testCase, decoded.result );
 			
