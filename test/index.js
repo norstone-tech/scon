@@ -49,6 +49,7 @@ function testKeyValueEquality( key, obj1, obj2 ){
 describe("Swift-Cardinal Object Notation file format", function() {
 	
 	const testCase = {
+		binData: Buffer.from([13,37,76,132,23,12]),
 		string8: "Hello, world!!",
 		string16: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam aliquam ante nec sem venenatis, vitae vehicula arcu malesuada. Ut eleifend tempus urna sed eleifend. Donec volutpat tristique condimentum. Ut et pharetra erat, quis elementum nulla. Nam eu elit vulputate ante ullamcorper dictum ac vel nunc. Sed cursus ornare odio vel vestibulum. Morbi sollicitudin maximus neque, ac sagittis odio laoreet non. Aliquam pretium, magna non porttitor molestie, ante sapien blandit magna, ut cursus nullam.",
 		NotANumber: NaN,
