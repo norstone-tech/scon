@@ -5,7 +5,8 @@
  * Copyright (c) BlueStone Technological Enterprises Inc., 2016-2017
  * Licensed under the GNU GPLv3 license.
  */
-
+"use strict"
+ 
 const expect = require('chai').expect;
 const scon = require('../index.js');
 
