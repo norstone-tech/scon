@@ -72,8 +72,8 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 [node-version-image]: https://img.shields.io/node/v/scon.svg
 [node-version-url]: https://nodejs.org/en/download/
 
-[build-status-image]: https://travis-ci.org/JamesxX/scon.svg
-[build-status-url]: https://travis-ci.org/JamesxX/scon
+[build-status-image]: https://travis-ci.org/BlueStone-Tech-Enterprises/scon.svg
+[build-status-url]: https://travis-ci.org/BlueStone-Tech-Enterprises/scon
 
 [license-image]: https://img.shields.io/npm/l/scon.svg?maxAge=2592000
 [license-url]: LICENSE

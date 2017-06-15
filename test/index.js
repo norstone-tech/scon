@@ -11,14 +11,22 @@ const scon = require('../index.js');
 
 function testKeyValueEquality( key, obj1, obj2 ){
 	
+	it( "Key " + key + " should be the same type", function(){
+		expect( typeof obj1[ key ] ).to.equal( typeof obj2[ key ] );
+	});
+	
 	if ( typeof obj1[ key ] == "object" ){
 		
 		describe( "Testing member object '" + key + "'", function(){
-			
-			for (let subkey in obj1[key]) {
-				testKeyValueEquality( subkey, obj1[key], obj2[key] );
+			if (obj1[ key ] instanceof Array || obj1[ key ] instanceof Uint8Array){
+				for (let subkey=0;subkey<obj1[key].length;subkey+=1){
+					testKeyValueEquality( subkey, obj1[key], obj2[key] );
+				}
+			}else{
+				for (let subkey in obj1[key]) {
+					testKeyValueEquality( subkey, obj1[key], obj2[key] );
+				}
 			}
-			
 		});
 		
 	} else if  ( typeof obj1[ key ] == "number" && isNaN( obj1[ key ] ) ) {
@@ -40,9 +48,10 @@ function testKeyValueEquality( key, obj1, obj2 ){
 describe("Swift-Cardinal Object Notation file format", function() {
 	
 	const testCase = {
-		string8: "world!!",
-		string16: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam aliquam ante nec sem venenatis, vitae vehicula arcu malesuada. Ut eleifend tempus urna sed eleifend. Donec volutpat tristique condimentum. Ut et pharetra erat, quis elementum nulla. Nam eu elit vulputate ante ullamcorper dictum ac vel nunc. Sed cursus ornare odio vel vestibulum. Morbi sollicitudin maximus neque, ac sagittis odio laoreet non. Aliquam pretium, magna non porttitor molestie, ante sapien blandit magna, ut cursus nullam. ",
+		string8: "Hello, world!!",
+		string16: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam aliquam ante nec sem venenatis, vitae vehicula arcu malesuada. Ut eleifend tempus urna sed eleifend. Donec volutpat tristique condimentum. Ut et pharetra erat, quis elementum nulla. Nam eu elit vulputate ante ullamcorper dictum ac vel nunc. Sed cursus ornare odio vel vestibulum. Morbi sollicitudin maximus neque, ac sagittis odio laoreet non. Aliquam pretium, magna non porttitor molestie, ante sapien blandit magna, ut cursus nullam.",
 		NotANumber: NaN,
+		inf:Number.POSITIVE_INFINITY,
 		pi: 3.14159,
 		object: {
 			bool:true,
@@ -53,7 +62,8 @@ describe("Swift-Cardinal Object Notation file format", function() {
 		six: 6,
 		uint16: 1337,
 		int16: -1337,
-		array8: ["wan","too","free",{"for":4},[1,2,3,4,5]]
+		array8: ["wan","too","free",{"for":4},[1,2,3,4,5]], 
+		"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam aliquam ante nec sem venenatis, vitae vehicula arcu malesuada. Ut eleifend tempus urna sed eleifend. Donec volutpat tristique condimentum. Ut et pharetra erat, quis elementum nulla. Nam eu elit vulputate ante ullamcorper dictum ac vel nunc. Sed cursus ornare odio vel vestibulum. Morbi sollicitudin maximus neque, ac sagittis odio laoreet non. Aliquam pretium, magna non porttitor molestie, ante sapien blandit magna, ut cursus nullam.":"This is a really long string, ain't it?",
 	};
 	testCase["array16"] = [];
 	for (let i=0;i<300;i+=1){
@@ -61,26 +71,28 @@ describe("Swift-Cardinal Object Notation file format", function() {
 	}
 	
 	it( "should not throw errors when encoding", function(){
-		expect( function(){scon.encode( testCase )} ).to.not.throw( scon.Exception );
+		expect( function(){scon.encode( testCase )} ).to.not.throw( Error );
 	});
 	
 	const encoded = scon.encode( testCase );
 	
+	/*
 	it("should write the magic number", function(){
-		expect( encoded.result.substring( 0, scon.magicNumber.length ) ).to.equal( scon.magicNumber );
+		expect( encoded.substring( 0, scon.magicNumber.length ) ).to.equal( scon.magicNumber );
 	});
+	*/
 	
 	it( "should not throw errors when decoding", function(){
-		expect( function(){scon.decode( encoded.result )} ).to.not.throw( scon.Exception );
+		expect( function(){scon.decode( encoded )} ).to.not.throw( Error );
 	});
 	
-	const decoded = scon.decode( encoded.result );
+	const decoded = scon.decode( encoded );
 	
 	describe( "testing equality of testCase and decoded object", function(){
 		
 		for (let key in testCase) {
 			
-			testKeyValueEquality( key, testCase, decoded.result );
+			testKeyValueEquality( key, testCase, decoded );
 			
 		}
 		

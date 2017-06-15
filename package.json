@@ -1,6 +1,6 @@
 {
   "name": "scon",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "Read and write scon files",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JamesxX/scon.git"
+    "url": "git+https://github.com/BlueStone-Tech-Enterprises/scon.git"
   },
   "keywords": [
     "scon",
@@ -18,9 +18,9 @@
   "author": "James R Swift <james.rt.swift@gmail.com>; Aritz Beobide-Cardinal <aritz@aritzcracker.ca>",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/JamesxX/scon/issues"
+    "url": "https://github.com/BlueStone-Tech-Enterprises/scon/issues"
   },
-  "homepage": "https://github.com/JamesxX/scon#readme",
+  "homepage": "https://github.com/BlueStone-Tech-Enterprises/scon#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^2.5.3"
