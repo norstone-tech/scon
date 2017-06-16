@@ -19,23 +19,24 @@ npm install scon --save
 ## Usage
 
 ```js
-var scon = require('scon');
+var useMagicNumber = true; //If useMagicNumber is undefined or null, it will default to true;
+var scon = require( 'scon', useMagicNumber );
 
 // If you wish to encode binary data, use NodeJS Buffers or Uint8Arrays
 var encoded = scon.encode( { hello: "world!", five: 5 } );
-encoded instanceof Uint8Array; // true
+// encoded will be a Buffer or Uint8Array depending on the platform you're using it on.
 
-var decoded = scon.decode( encoded );
-```
+var decoded = scon.decode( encoded, useMagicNumber );
 
-## Information for NodeJS use
 
-```
-// You can convert a Uint8Array to a NodeJS Buffer by doing the following:
-var buff = Buffer.from(encodedSCON.buffer)
+// SCON also now supports "Stream decoding". These are intended for use where you get a stream of never-ending scon data.
+// scon.streamDecode returns a function which expects a chunk of data (Uint8Array, Buffer, or String with characters no higher than 255)
+// For example:
+readableStream.on('data', scon.streamDecode(function(decoded){
+	console.log("The object decoded was:",decoded);
+},useMagicNumber));
+// It is important to note if the chunk contains multiple complete SCONs, the callback will be called IN SYNC, this is to make sure that the entire chunk is read before the next one arrives.
 
-// Since (starting with NodeJS 4.X.X) NodeJS buffer objects are also instances of Uint8Array's, you can simply decode buffers
-var decoded = scon.decode( buff );
 ```
 
 ## Contributing
@@ -44,6 +45,9 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 Add unit tests for any new or changed functionality. Lint and test your code.
 
 ## Release History
+* 2.0.1
+  * Switched to NodeJS buffer functions for optimization, but falls back to Uint8Arrays for cross-platform use
+  * Added scon.streamDecode
 
 * 2.0.0 
   * Now uses Uint8Array instead of NodeJS Buffer for browser support

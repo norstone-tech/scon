@@ -9,6 +9,7 @@
  
 const expect = require('chai').expect;
 const scon = require('../index.js');
+const fs = require("fs");
 
 function testKeyValueEquality( key, obj1, obj2 ){
 	
@@ -48,6 +49,7 @@ function testKeyValueEquality( key, obj1, obj2 ){
 
 describe("Swift-Cardinal Object Notation file format", function() {
 	
+	
 	const testCase = {
 		binData: Buffer.from([13,37,76,132,23,12]),
 		string8: "Hello, world!!",
@@ -78,15 +80,21 @@ describe("Swift-Cardinal Object Notation file format", function() {
 	
 	const encoded = scon.encode( testCase );
 	
+	
 	/*
 	it("should write the magic number", function(){
 		expect( encoded.substring( 0, scon.magicNumber.length ) ).to.equal( scon.magicNumber );
 	});
 	*/
 	
+	
+	
 	it( "should not throw errors when decoding", function(){
 		expect( function(){scon.decode( encoded )} ).to.not.throw( Error );
 	});
+	
+	
+	
 	
 	const decoded = scon.decode( encoded );
 	
@@ -100,5 +108,39 @@ describe("Swift-Cardinal Object Notation file format", function() {
 		
 	});
 	
+	
+	
+	const firstTest = fs.readFileSync("test/test1.scon");
+	it( "should not throw errors when decoding a NodeJS Buffer", function(){
+		expect( function(){scon.decode( firstTest )} ).to.not.throw( Error );
+	});
+	it( "should decode a NodeJS buffer correctly", function(){
+		let decoded = scon.decode(firstTest);
+		expect( decoded.hello ).to.equal( "world!" );
+	});
+		
+	it( "should decode all complete scons in a chunk", function(){
+		const secondTest = fs.readFileSync("test/test2.scon");
+		let count = 0;
+		scon.streamDecode(function(obj){
+			count+=1;
+			console.log("completed multiscon #"+count);
+		})(secondTest);
+		expect(count).to.equal( 5 );
+	});
+	
+	
+	it( "should decode a stream of chunks", function(){
+		const firstChunk = fs.readFileSync("test/test3-1.scon");
+		const secondChunk = fs.readFileSync("test/test3-2.scon");
+		let count = 0;
+		const decodeFunc = scon.streamDecode(function(obj){
+			count+=1;
+		});
+		decodeFunc(firstChunk);
+		decodeFunc(secondChunk);
+		expect(count).to.equal( 1 );
+	});
+		
 });
 

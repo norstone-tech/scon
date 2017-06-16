@@ -53,10 +53,26 @@ var debugArr = function(arr){
 
 
 var scon = require( "./index.js" );
+let testObj = { testInt:8 ,hello: "world!!", hi: "bye", five: NaN, pi: 3.14159, object:{amazing:true,true:{"mind":"fuck"}}, six: 6 ,arr:["wan","too","free",{"for":4},[1,2,3,4,5]]};
+let t = 0;
 
-var encoded = scon.encode( { testInt:8 ,hello: "world!!", hi: "bye", five: NaN, pi: 3.14159, object:{amazing:true,true:{"mind":"fuck"}}, six: 6 ,arr:["wan","too","free",{"for":4},[1,2,3,4,5]]});
-console.log( "encoded:" );
-debugArr(encoded)
+var time = process.hrtime();
+var encoded = scon.encode( testObj );
+console.log(process.hrtime(time)[1]/1000000000);
+//debugArr(encoded)
 
+time = process.hrtime();
 var decoded = scon.decode( encoded );
-console.log( "decoded:", decoded);
+console.log(process.hrtime(time)[1]/1000000000);
+//console.log(decoded);
+
+time = process.hrtime();
+var encoded = JSON.stringify(testObj);
+console.log(process.hrtime(time)[1]/1000000000);
+
+//debugArr(encoded)
+
+time = process.hrtime();
+var decoded = JSON.parse( encoded );
+console.log(process.hrtime(time)[1]/1000000000);
+
