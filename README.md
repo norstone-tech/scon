@@ -1,14 +1,14 @@
 Swift-Cardinal Object Notation (SCON)
 =========
 
-A minimal node module allowing the reading and writing of data in the SCON format.
-The SCON format, created by Aritz J Beobide-Cardinal (ARitz Cracker) and James R Swift, is an extendable binary file format that was created to store data more efficiently than the popular JSON standard.
+[![NPM][npm-image]][npm-url]
 
-[![NPM Version][npm-image]][npm-url]
-[![NPM Downloads][downloads-image]][downloads-url]
 [![Node.js Version][node-version-image]][node-version-url]
 [![Build status][build-status-image]][build-status-url]
 [![License][license-image]][license-url]
+
+A minimal node module allowing the reading and writing of data in the SCON format.
+The SCON format, created by Aritz J Beobide-Cardinal (ARitz Cracker) and James R Swift, is an extendable binary file format that was created to store data more efficiently than the popular JSON standard.
 
 ## Installation
 
@@ -67,11 +67,8 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 * 0.8.2 Removed left over tests.
 * 0.8.0 Initial release
 
-[npm-image]: https://img.shields.io/npm/v/scon.svg
-[npm-url]: https://npmjs.org/package/scon
-
-[downloads-image]: https://img.shields.io/npm/dm/scon.svg
-[downloads-url]: https://npmjs.org/package/scon
+[npm-image]: https://nodei.co/npm/scon.png?downloads=true&downloadRank=true&stars=true
+[npm-url]: https://nodei.co/npm/scon/
 
 [node-version-image]: https://img.shields.io/node/v/scon.svg
 [node-version-url]: https://nodejs.org/en/download/
