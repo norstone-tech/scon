@@ -9,9 +9,11 @@ before_install:
   - npm install -g mocha
   - npm install -g chai
   - npm install -g nyc
-
+  - npm install -g coveralls
 branches:
  only:
    - master
    - developer
-script: npm run testcov
+script: npm run travis:start
+after_script:
+   - npm run travis:after
