@@ -11,13 +11,27 @@
 const sconUtil = {};
 
 sconUtil.mergeRecursive = function (obj1, obj2) {
+	
 	for (let p in obj2) {
-		if (obj2[p] == null || obj2[p].constructor !== Object){
+		try {
+			// Property in destination object set; update its value.
+			if ( obj2[p].constructor==Object ) {
+				
+				obj1[p] = sconUtil.mergeRecursive({}, obj2[p]);
+			
+			} else {
+				
+				obj1[p] = obj2[p];
+				
+			}
+		
+		} catch(e) {
+			// Property in destination object not set; create it and set its value.
 			obj1[p] = obj2[p];
-		}else{
-			obj1[p] = sconUtil.mergeRecursive({}, obj2[p]);
+		
 		}
 	}
+	
 	return obj1;
 };
 

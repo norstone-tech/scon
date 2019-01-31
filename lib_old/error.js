@@ -11,7 +11,7 @@
 const sconError = {};
 
 sconError.errorCodes = {};
-sconError.errorMesages = [];
+sconError.errorMesages = {};
 
 sconError.defineError = function ( errorName, errorCode, errorMessage ){
 	
@@ -20,24 +20,21 @@ sconError.defineError = function ( errorName, errorCode, errorMessage ){
 	
 };
 
-class SconError extends Error{
-	constructor(errorCode , details){
-		let msg;
-		if (typeof errorCode === "string"){
-			msg = sconError.errorMesages[ sconError.errorCodes[ errorCode ] ];
-		}else{
-			msg = sconError.errorMesages[ errorCode ];
-		}
-		if(details){
-			msg += " ("+details+")";
-		}
-		super(msg);
-		this.name = "SconError";
+sconError.Exception = function( errorCode , details) {
+	this.name = 'sconException';
+	this.message = sconError.errorMesages[ errorCode ];
+	if(details){
+		this.message += " ("+details+")";
 	}
+	this.name = "sconException";
+	this.code = errorCode;
+	
+	// --WORKAROUND BECAUSE I HAVE NO IDEA HOW TO INHERENT FORM ERROR PROPERLY-- //
+    const err = new Error();
+	const stackpos = err.stack.indexOf("\n",6) //Error is usually 5 chars long
+	this.stack = this.name+": "+this.message+"\n"+err.stack.substr(stackpos+1);
 }
-
-sconError.Error = SconError;
-sconError.Exception = SconError;
+sconError.Exception.prototype = Error.prototype;
 
 /********************************************
 
@@ -47,8 +44,7 @@ sconError.Exception = SconError;
 
 
 sconError.defineError( "noMagicNumber", 0, "Not SCON data (invalid magic number)" );
-sconError.defineError( "unknownObjectType", 1, "The data contains an unknown object type!" );
+sconError.defineError( "unknownObjectType", 1, "The string contains an unknown object type!" );
 sconError.defineError( "endOfFileTooSoon", 2, "The scon data ends unexpectedly" );
-sconError.defineError( "invalidKey", 3, "The value key is invalid" );
 
 module.exports = sconError;

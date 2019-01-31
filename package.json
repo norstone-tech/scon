@@ -1,10 +1,11 @@
 {
   "name": "scon",
-  "version": "2.0.1b",
+  "version": "2.1.0",
   "description": "Read and write scon files",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha"
+    "test": "mocha",
+    "testcov": "nyc --check-coverage --lines 100 --functions 100 --branches 100 mocha"
   },
   "repository": {
     "type": "git",
@@ -21,8 +22,12 @@
     "url": "https://github.com/BlueStone-Tech-Enterprises/scon/issues"
   },
   "homepage": "https://github.com/BlueStone-Tech-Enterprises/scon#readme",
+  "dependencies": {
+    "arc-bufferlib": "^0.9.1-c"
+  },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "mocha": "^2.5.3"
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "nyc": "^13.1.0"
   }
 }
