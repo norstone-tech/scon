@@ -5,6 +5,7 @@ Swift-Cardinal Object Notation (SCON)
 
 [![Node.js Version][node-version-image]][node-version-url]
 [![Build status][build-status-image]][build-status-url]
+[![Coverage Status](https://coveralls.io/repos/github/BlueStone-Tech-Enterprises/scon/badge.svg)](https://coveralls.io/github/BlueStone-Tech-Enterprises/scon)
 [![License][license-image]][license-url]
 
 A minimal node module allowing the reading and writing of data in the SCON format.
