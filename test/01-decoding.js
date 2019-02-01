@@ -257,6 +257,19 @@ describe("SCON Decoder", function() {
 			);
 			v *= (2**8);
 		}
+		expect(
+			scon.decode(Buffer.from([
+				0x1c | 0x80, // type=int8 with "Short key name length" modifier
+				1, // "v" has 1 char
+				0x76, // "v"
+				127,
+				0x00 // End of Object
+			]), noMagicNumber)
+		).to.deep.equal(
+			{
+				v: 127
+			}
+		);
 	});
 	it ("decodes ints", function(){
 		let v = -128;
