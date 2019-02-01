@@ -1,15 +1,19 @@
 language: node_js
 
-# test on two node.js versions: 0.6 and 0.8
+# test on stable and LTS
 node_js:
-  - 6.11.0
+  - "node" #stable
+  - "lts/*"
   
 before_install:
   - npm install -g mocha
   - npm install -g chai
-
+  - npm install -g nyc
+  - npm install -g coveralls
 branches:
  only:
    - master
    - developer
-script: mocha
+script: npm run travis:start
+after_script:
+   - npm run travis:after

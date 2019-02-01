@@ -5,6 +5,7 @@ Swift-Cardinal Object Notation (SCON)
 
 [![Node.js Version][node-version-image]][node-version-url]
 [![Build status][build-status-image]][build-status-url]
+[![Coverage Status](https://coveralls.io/repos/github/BlueStone-Tech-Enterprises/scon/badge.svg)](https://coveralls.io/github/BlueStone-Tech-Enterprises/scon)
 [![License][license-image]][license-url]
 
 A minimal node module allowing the reading and writing of data in the SCON format.
@@ -19,32 +20,70 @@ npm install scon --save
 ## Usage
 
 ```js
-var useMagicNumber = true; //If useMagicNumber is undefined or null, it will default to true;
-var scon = require( 'scon', useMagicNumber );
+const useMagicNumber = true; //If useMagicNumber is undefined or null, it will default to true;
+const scon = require( 'scon', useMagicNumber );
 
 // If you wish to encode binary data, use NodeJS Buffers or Uint8Arrays
-var encoded = scon.encode( { hello: "world!", five: 5 } );
+let encoded = scon.encode( { hello: "world!", five: 5 } );
 // encoded will be a Buffer or Uint8Array depending on the platform you're using it on.
 
-var decoded = scon.decode( encoded, useMagicNumber );
+// decoded is now { hello: "world!", five: 5 }
+let decoded = scon.decode( encoded, useMagicNumber );
 
+// The second argument can also be an options object, the options are defined as so:
+/*
+{
+	useMagicNumber, // Whether or not to use the magic number. Defaults to true
+	noDupeStrings, // If enabled, strings (for both keys and values) will be stored as references. This ensures that all strings are stored once. This may increase file size if the amount of unique strings is greater than the space-savings from incoding them as references
+	circularObjects // Enables circular object support. Note that this will store all objects as references, so don't enable it if you don't need it.
+}
+*/
 
-// SCON also now supports "Stream decoding". These are intended for use where you get a stream of never-ending scon data.
-// scon.streamDecode returns a function which expects a chunk of data (Uint8Array, Buffer, or String with characters no higher than 255)
-// For example:
-readableStream.on('data', scon.streamDecode(function(decoded){
-	console.log("The object decoded was:",decoded);
-},useMagicNumber));
-// It is important to note if the chunk contains multiple complete SCONs, the callback will be called IN SYNC, this is to make sure that the entire chunk is read before the next one arrives.
+// There's also scon.decodeAsync which allows you to asyncronously decode a scon object in chunks.
+let firstChunk = await readDataBufferChunkSomehow();
+let decoded = await scon.decodeAsync(firstChunk, {useMagicNumber: false}, (requestedLength) => {
+	// This callback function gets passed how much data is requested in bytes
+	// It must return a promise which resolves to a Buffer or Uint8Array
+	// If the returned promise rejects, the scon.decodeAsync function will also reject with the same error
+	return readDataBufferChunkSomehow();
+});
+decoded.result; // This contains your data
+decoded.leftover; // This contains a Buffer or Uint8Array containing all the data which hasn't been read after the end of the SCON data.
+*/
+```
 
+## A cool sidenote regarding circular objects
+```js
+// You really shouldn't have to know this, I'm just kinda proud of what I did here.
+// Sometimes during the decoding process, a reference will point to an object which hasn't been decoded yet. This is true for circular objects. When this happens, the decode function's returned object will have what I like to call "quantum properties", where the value is completly unknown until observed.
+
+// Consider the following object
+let obj = {v:{}};
+obj.v.v = obj.v;
+util.inspect(decodedObj); // "{ v: { v: [Circular] } }";
+// Now, run it through SCON
+let decodedObj = scon.decode(scon.encode(obj,{circularObjects:true}));
+util.inspect(decodedObj); // "{ v: { v: [Getter/Setter] } }";
+// What's this? A Getter/Setter property? That wasn't in the original object!
+// Here's the cool part, the act of reading to or writing the property will reveal its actual value;
+util.inspect(decodedObj.v.v); // "{ v: [Circular] };
+// Now if we inspect the whole object again...
+util.inspect(decodedObj); // "{ v: { v: [Circular] } }";
+// Neat, huh?
 ```
 
 ## Contributing
 
-In lieu of a formal styleguide, take care to maintain the existing coding style.
-Add unit tests for any new or changed functionality. Lint and test your code.
+In lieu of a formal styleguide, take care to maintain the existing coding style. Sometime in the future, I might add a linter to yell at you. (and me)
+Add unit tests for any new or changed functionality. 100% code coverage, or bust.
 
 ## Release History
+* 2.1.0
+  * Codebase has been re-written, yet the encode and decode functions still remain backwards compatible with 2.0
+  * Added circular object support
+  * Added the pointer datatype, which can point to referencedValue datatypes. This can be used to encode larger objects like strings once and then use references to them in order to save space
+  * New and improved tests now with 100% more code coverage!
+
 * 2.0.1
   * Switched to NodeJS buffer functions for optimization, but falls back to Uint8Arrays for cross-platform use
   * Added scon.streamDecode
