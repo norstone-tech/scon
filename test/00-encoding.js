@@ -786,7 +786,7 @@ describe('SCON Encoder', function() {
 			0x01, // Point to the referenced compound
 			0x00 // end of root compound
 		]));
-	});
+    });
 	it("uses references with buffers when circularObjects are enabled", function(){
 		const testBuffer = randomBytes(30);
 		expect(
