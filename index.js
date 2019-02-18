@@ -9,11 +9,11 @@
 "use strict";
 
 const scon = {};
-const sconUtil = require( "./lib/util.js" );
+const sconUtil = require("./lib/util.js");
 
-sconUtil.loadSubmodule( scon, "lib/conf.js" );
-sconUtil.loadSubmodule( scon, "lib/error.js" );
-sconUtil.loadSubmodule( scon, "lib/encode.js" );
-sconUtil.loadSubmodule( scon, "lib/decode.js" );
+sconUtil.loadSubmodule(scon, "lib/conf.js");
+sconUtil.loadSubmodule(scon, "lib/error.js");
+sconUtil.loadSubmodule(scon, "lib/encode.js");
+sconUtil.loadSubmodule(scon, "lib/decode.js");
 
 module.exports = scon;

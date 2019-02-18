@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha",
     "test:cov": "nyc --check-coverage --lines 100 --functions 100 --branches 100 --statements 100 mocha",
-    "travis:start": "npm run test:cov",
+    "travis:start": "eslint . && npm run test:cov",
     "travis:after": "nyc report --reporter=text-lcov | coveralls"
   },
   "repository": {
@@ -31,6 +31,7 @@
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "mocha": "^5.2.0",
-    "nyc": "^13.1.0"
+    "nyc": "^13.1.0",
+    "eslint": "^5.14.1"
   }
 }

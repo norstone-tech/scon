@@ -6,10 +6,7 @@ node_js:
   - "lts/*"
   
 before_install:
-  - npm install -g mocha
-  - npm install -g chai
-  - npm install -g nyc
-  - npm install -g coveralls
+  - npm install -g mocha chai nyc coveralls eslint
 branches:
  only:
    - master
