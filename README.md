@@ -78,6 +78,9 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 Add unit tests for any new or changed functionality. 100% code coverage, or bust.
 
 ## Release History
+* 2.1.1
+  * Fixed a stack overflow when syncronously decoding large files
+
 * 2.1.0
   * Codebase has been re-written, yet the encode and decode functions still remain backwards compatible with 2.0
   * Added circular object support
