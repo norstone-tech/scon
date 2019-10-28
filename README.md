@@ -78,6 +78,9 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 Add unit tests for any new or changed functionality. 100% code coverage, or bust.
 
 ## Release History
+* 2.1.2
+  * Fixed encoding objects with defined `undefined` values
+
 * 2.1.1
   * Fixed a stack overflow when syncronously decoding large files
 
