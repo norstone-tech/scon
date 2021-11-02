@@ -1,7 +1,7 @@
 const Benchmark = require('benchmark');
 const suite = new Benchmark.Suite("SCON/JSON comparison");
 const {SconEncoder, SconDecoder} = require("./");
-const se = new SconEncoder({referencedStrings: false});
+const se = new SconEncoder({referencedStrings: true});
 const sd = new SconDecoder();
 const testCount = 100;
 const testVal = {
@@ -10,11 +10,11 @@ const testVal = {
 	"number": 1337,
 	"float": 13.37
 }
-for(let i = 0; i < 1000; i += 1){
-	// testVal[i.toString(36)] = Math.random() * 10000 | 0;
+for(let i = 0; i < 500; i += 1){
+	testVal[i.toString(36)] = Math.random() * 10000 | 0;
 	// testVal[i.toString(36)] = Math.random() * 10000;
-	// testVal[i.toString(36)] = Math.random().toString(36);
-	// testVal[(i + 1000).toString(36)] = "test";
+	testVal[(i + 500).toString(36)] = Math.random().toString(36);
+	testVal[(i + 1000).toString(36)] = "test";
 }
 const encodedJson = JSON.stringify(testVal);
 const encodedScon = se.encode(testVal);

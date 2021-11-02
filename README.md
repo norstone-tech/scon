@@ -8,7 +8,7 @@ SCON3 is an extendable binary object serialization format created to store and t
 
 ### Differences from native JSON.parse/JSON.stringify
 * SCON3 is (sometimes) faster
-  * Appears to consistently parse lots of string values faster than JSON, though currently encoding is much slower
+  * Appears to consistently parse lots of string and number values faster than JSON, though currently encoding is much slower
 * SCON3 produces significantly smaller output, however, as it is a binary format, it isn't intended to be human-readable
 * SCON3 can serialize objects with circular references
 * SCON3 can serialize several value types not supported by JSON without any additional user processing
