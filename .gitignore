@@ -38,3 +38,6 @@ jspm_packages
 
 # Vs Code
 .vscode
+
+# These always caused me problems lmao
+package-lock.json

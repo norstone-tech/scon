@@ -1,27 +1,29 @@
 ```
-"SCON 3"
+"Scon 3" 
 
 Type byte
 ########
 01234567
 
 0-2: Base type
-  3: Base type parsing method
+  3: Base type parsing method/variant
   4: IsExtendedType (1 extra byte, extended type 0 is the same as no extended type)
-  5: IsReferenceDefinition (value is prefixed with a varint representing its reference number)
+  5: IsReferenceDefinition
   6: Multiple meanings
     - Ignored if parsing array
     - If parsing object map: key is reference
     - If this is a reference definition: This value may be replacing a previously defined reference definition @ (varint value)
-  7: Value is reference
+  7: Value is reference (varint value) value type SHOULD match
 
+* keys are always a null-terminated string, or a reference leading to a utf8-encoded string
 * references are parsed using varint
 * technically a reference definition can be made that just leads to another reference
 * All extended types beyond 128 are user-definable
 * Extended types do not change parsing in any way, but change how to interpret the data given
+* No type enforcement with maps or arrays, that can be handeled by the user
 
 Base types
-0: Stop (Other bits ignored)
+0: Stop - End of object or array (Other bits ignored)
 1: null
   - parse methods identical
   - no extended types (all are ignored)
@@ -51,7 +53,7 @@ Base types
   - Extended type 16: BigInt (Infinite)
   - Extended type 32: parse as Date (Second unix time)
   - Extended type 33: Parse as Date (Millisecond unix time)
-  - Unknown extended type: parse as type 16
+  - Unknown extended type: Interpret as type 16
 5: Null-terminated string
   - parse method 0: binary 1: utf8
   - no extended types (all are ignored)
@@ -59,6 +61,8 @@ Base types
   - reads a varint to see what length the string is, then reads x many bytes
   - no extended types (all are ignored)
 7: Nested object
-  - parse method 0 is a map, parse method 1 is an array
-  - no extended types (all are ignored)
+  - parse method 0 is an object, parse method 1 is an array
+  - Extended type 1: Map<string, any> if object. Set<any> if array
+  - Extended type 2: Always Map<any, any>, same as above if object, though as array, the array must contain arrays containing key/value pairs (like what you can specify in the Map constructor)
+  - Unknown extended type: interpret as 0
 ```
