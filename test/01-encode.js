@@ -888,4 +888,44 @@ describe("SCON Encoder", function() {
 			).to.throw(SconSerializeError);
 		});
 	});
+    describe("boolean value encoding", function(){
+		it("works", function(){
+			const encoder = new SconEncoder();
+			expect(
+				encoder.encode({hello: false})
+			).to.deep.equal(Buffer.from([
+				0x07, // Ding!
+				0x53, // S
+				0x43, // C
+				0x33, // 3
+				BASE_TYPES.BOOLEAN,
+				"h".charCodeAt(),
+				"e".charCodeAt(),
+				"l".charCodeAt(),
+				"l".charCodeAt(),
+				"o".charCodeAt(),
+				0x00, // End of key string
+				// No value to encode, literally just false
+				0x00 // End of Object
+			]));
+            ///
+            expect(
+				encoder.encode({hello: true})
+			).to.deep.equal(Buffer.from([
+				0x07, // Ding!
+				0x53, // S
+				0x43, // C
+				0x33, // 3
+				BASE_TYPES.BOOLEAN | HEADER_BYTE.BASE_TYPE_VARIANT,
+				"h".charCodeAt(),
+				"e".charCodeAt(),
+				"l".charCodeAt(),
+				"l".charCodeAt(),
+				"o".charCodeAt(),
+				0x00, // End of key string
+				// No value to encode, literally just false
+				0x00 // End of Object
+			]));
+		});
+	});
 });
