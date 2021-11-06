@@ -10,11 +10,12 @@ Type byte
   4: IsExtendedType (1 extra byte, extended type 0 is the same as no extended type)
   5: IsReferenceDefinition
   6: Multiple meanings
-    - Ignored if parsing array
+    - Ignored if parsing array or root value
     - If parsing object map: key is reference
     - If this is a reference definition: This value may be replacing a previously defined reference definition @ (varint value)
   7: Value is reference (varint value) value type SHOULD match
 
+* First value _that isn't a reference definition_ is the "root value"
 * keys are always a null-terminated string, or a reference leading to a utf8-encoded string
 * references are parsed using varint
 * technically a reference definition can be made that just leads to another reference
