@@ -6,6 +6,8 @@ Special thanks to James R Swift for creating the specifications and implementing
 
 SCON3 is an extendable binary object serialization format created to store and transfer data more efficiently than the popular JSON standard. Created by Aritz J Beobide-Cardinal (ARitz Cracker).
 
+This repo implements the `SCON3` format in JS. While using zero(ish) dependencies. (Requires NodeJS-like buffer objects. Check out [buffer-lite](https://github.com/aritz-cracker/buffer-lite) for web browser use!)
+
 ### Differences from native JSON.parse/JSON.stringify
 * SCON3 is (sometimes) faster
   * Appears to consistently parse lots of string and number values faster than JSON, though currently encoding is much slower
@@ -37,12 +39,30 @@ npm install scon
 ```
 ## Usage
 
+A website containing reference documentation is "coming soon™". For now, you can check out the JS doc comments everywhere.
 
+Here's a basic example...
+```js
+const {encode, decode, SconEncoder, SconDecoder} = require("scon");
+// Encode/decode with default options
+const defaultEncoded = encode({hello: "world!"});
+console.log(defaultEncoded); // <Buffer 07 53 43 33 e0 b0 68 65 6c 6c 6f 00 77 6f 72 6c 64 21 00 00>
+const defaultDecoded = decode(defaultEncoded);
+console.log(defaultDecoded); // { hello: 'world!' }
+
+// Encode with non-string map keys enabled, and without magic number
+const sconEnc = new SconEncoder({anyMapKey: true, magicNumber: false});
+const anyMapKeyEncoded = sconEnc.encode(new Map([[0, 1]]));
+console.log(anyMapKeyEncoded); // <Buffer f8 02 f0 80 00 80 01 00 00>
+// Decode without magic number
+const sconDec = new SconDecoder({magicNumber: false});
+const anyMapKeyDecoded = sconDec.decode(anyMapKeyEncoded);
+console.log(anyMapKeyDecoded); // Map(1) { 0 => 1 }
+```
 
 ## Contributing
 
-In lieu of a formal styleguide, take care to maintain the existing coding style. Sometime in the future, I might add a linter to yell at you. (and me)
-Add unit tests for any new or changed functionality. 100% code coverage, or bust.
+Pull requests are welcome! Please ensure `npm run test:full` succeeds before submitting any. That ensures that the code follows the coding style (as enforced by `npm run lint`) and that all test succeed with 100% code coverage (as enforced by `npm run test:cov`)
 
 ## Release History
 * 3.0.0

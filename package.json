@@ -5,8 +5,11 @@
   "main": "index.js",
   "scripts": {
     "coverage-report": "nyc --reporter=lcov --reporter=text-summary mocha",
+    "lint": "eslint . --fix",
     "test": "mocha",
-    "test:cov": "nyc --check-coverage --lines 100 --functions 100 --branches 100 --statements 100 mocha"
+    "test:cov": "nyc --check-coverage --lines 100 --functions 100 --branches 100 --statements 100 mocha",
+    "test:full": "npm run lint && npm run test:cov",
+    "prepublishOnly": "npm run test:full"
   },
   "repository": {
     "type": "git",
@@ -42,12 +45,16 @@
     "url": "https://github.com/norstone-tech/scon/issues"
   },
   "homepage": "https://github.com/norstone-tech/scon#readme",
+  "engines": {
+    "node": ">=12.0.0"
+  },
   "devDependencies": {
     "chai": "^4.3.4",
     "chai-as-promised": "^7.1.1",
     "eslint": "^8.1.0",
     "mocha": "^9.1.3",
     "nyc": "^15.1.0",
+    "eslint-config-norstone": "^1.0.0-beta.1",
     "benchmark": "^2.1.4"
   },
   "dependencies": {}

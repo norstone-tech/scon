@@ -1,4 +1,6 @@
-const {expect} = require('chai');
+/* eslint-env mocha */
+/* eslint-disable prefer-arrow-callback */
+const {expect} = require("chai");
 const {SconEncoder, BASE_TYPES, HEADER_BYTE, SconUnserializableError, SconInvalidKeyError, EXTENDED_TYPES, SconSerializeError} = require("../");
 
 describe("SCON Encoder", function() {

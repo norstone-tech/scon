@@ -1,4 +1,6 @@
-const {expect} = require('chai')
+/* eslint-env mocha */
+/* eslint-disable prefer-arrow-callback */
+const {expect} = require("chai");
 const {encode, BASE_TYPES} = require("../");
 describe("convenience functions", function(){
 	describe("encode", function(){
