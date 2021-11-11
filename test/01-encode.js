@@ -4,7 +4,7 @@ const {expect} = require("chai");
 const {SconEncoder, BASE_TYPES, HEADER_BYTE, SconUnserializableError, SconInvalidKeyError, EXTENDED_TYPES, SconSerializeError} = require("../");
 
 describe("SCON Encoder", function() {
-	describe("key+string encoding", function(){
+	describe("basic object and string encoding", function(){
 		it("encodes empty objects as a single null byte (magic number explicitly disabled)", function(){
 			const encoder = new SconEncoder({magicNumber: false});
 			expect(
@@ -40,7 +40,7 @@ describe("SCON Encoder", function() {
 				0x00 // End of Object
 			]));
 		});
-		it("Can encode null-terminated strings by themselves", function(){
+		it("Can encode null-terminated strings as a root value", function(){
 			const encoder = new SconEncoder();
 			expect(
 				encoder.encode("hello, world!")
