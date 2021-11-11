@@ -597,4 +597,36 @@ describe("SCON Decoder", function(){
 			).to.be.undefined;
 		});
 	});
+	describe("null value decoding", function(){
+		it("works", function(){
+			const decoder = new SconDecoder();
+			expect(
+				decoder.decode(Buffer.from([
+					0x07, // Ding!
+					0x53, // S
+					0x43, // C
+					0x33, // 3
+					BASE_TYPES.OBJECT, // start of root object
+					BASE_TYPES.NULL, // value type is null
+					"h".charCodeAt(),
+					"e".charCodeAt(),
+					"l".charCodeAt(),
+					"l".charCodeAt(),
+					"o".charCodeAt(),
+					0x00, // End of key string
+					// No value to encode, literally just null
+					0x00 // End of root Object
+				]))
+			).to.deep.equal({hello: null});
+			expect(
+				decoder.decode(Buffer.from([
+					0x07, // Ding!
+					0x53, // S
+					0x43, // C
+					0x33, // 3
+					BASE_TYPES.NULL // Root value is null. That's it
+				]))
+			).to.be.null;
+		});
+	});
 });
