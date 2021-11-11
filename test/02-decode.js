@@ -78,18 +78,6 @@ describe("SCON Decoder", function(){
 				]))
 			).to.throw(SconTruncateError);
 		});
-		it("returns undefined when only encountering an EOF", function(){
-			const decoder = new SconDecoder();
-			expect(
-				decoder.decode(Buffer.from([
-					0x07, // Ding!
-					0x53, // S
-					0x43, // C
-					0x33, // 3
-					BASE_TYPES.EOF
-				]))
-			).to.be.undefined;
-		});
 		it("can decode a null terminated string as a root value", function(){
 			const decoder = new SconDecoder();
 			expect(
@@ -594,6 +582,19 @@ describe("SCON Decoder", function(){
 				]))
 			).to.throw(SconReferenceError);
 		});
-
+	});
+	describe("undefined value decoding", function(){
+		it("returns undefined when only encountering an EOF", function(){
+			const decoder = new SconDecoder();
+			expect(
+				decoder.decode(Buffer.from([
+					0x07, // Ding!
+					0x53, // S
+					0x43, // C
+					0x33, // 3
+					BASE_TYPES.EOF
+				]))
+			).to.be.undefined;
+		});
 	});
 });
