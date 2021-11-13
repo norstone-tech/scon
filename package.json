@@ -49,13 +49,14 @@
     "node": ">=12.0.0"
   },
   "devDependencies": {
+    "benchmark": "^2.1.4",
     "chai": "^4.3.4",
     "chai-as-promised": "^7.1.1",
+    "chai-datetime": "^1.8.0",
     "eslint": "^8.1.0",
-    "mocha": "^9.1.3",
-    "nyc": "^15.1.0",
     "eslint-config-norstone": "^1.0.0-beta.1",
-    "benchmark": "^2.1.4"
+    "mocha": "^9.1.3",
+    "nyc": "^15.1.0"
   },
   "dependencies": {}
 }

@@ -1555,6 +1555,186 @@ describe("SCON Encoder", function() {
 			expect(
 				encoder.encode.bind(encoder, {outOfRange: 170141183460469231731687303715884105728n})
 			).to.throw(SconSerializeError);
+
+
+			// unsigned 256 bit
+			encoder.options.bigIntExtendedType = EXTENDED_TYPES.INT_VAR.UINT256;
+			expect(
+				encoder.encode({low: 0n, high: 115792089237316195423570985008687907853269984665640564039457584007913129639935n})
+			).to.deep.equal(Buffer.from([
+				0x07, // Ding!
+				0x53, // S
+				0x43, // C
+				0x33, // 3
+				BASE_TYPES.OBJECT, // start of root object
+				BASE_TYPES.INT_VAR | HEADER_BYTE.HAS_EXTENDED_TYPE,
+				EXTENDED_TYPES.INT_VAR.UINT256,
+				"l".charCodeAt(),
+				"o".charCodeAt(),
+				"w".charCodeAt(),
+				0x00, // End of key string
+				0b00000000, // 0, end of varint
+				BASE_TYPES.INT_VAR | HEADER_BYTE.HAS_EXTENDED_TYPE,
+				EXTENDED_TYPES.INT_VAR.UINT256,
+				"h".charCodeAt(),
+				"i".charCodeAt(),
+				"g".charCodeAt(),
+				"h".charCodeAt(),
+				0x00, // End of key string
+				0b10001111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b01111111,
+				0x00 // End of Object
+			]));
+			expect(
+				encoder.encode.bind(encoder, {outOfRange: -1n})
+			).to.throw(SconSerializeError);
+			expect(
+				encoder.encode.bind(encoder, {outOfRange: 115792089237316195423570985008687907853269984665640564039457584007913129639936n})
+			).to.throw(SconSerializeError);
+
+			// signed 256 bit
+			encoder.options.bigIntExtendedType = EXTENDED_TYPES.INT_VAR.SINT256;
+			expect(
+				encoder.encode({
+					low: -57896044618658097711785492504343953926634992332820282019728792003956564819968n,
+					high: 57896044618658097711785492504343953926634992332820282019728792003956564819967n
+				})
+			).to.deep.equal(Buffer.from([
+				0x07, // Ding!
+				0x53, // S
+				0x43, // C
+				0x33, // 3
+				BASE_TYPES.OBJECT, // start of root object
+				BASE_TYPES.INT_VAR | HEADER_BYTE.HAS_EXTENDED_TYPE | HEADER_BYTE.BASE_TYPE_VARIANT,
+				EXTENDED_TYPES.INT_VAR.SINT256,
+				"l".charCodeAt(),
+				"o".charCodeAt(),
+				"w".charCodeAt(),
+				0x00, // End of key string
+				0b10001000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b10000000,
+				0b00000000,
+				BASE_TYPES.INT_VAR | HEADER_BYTE.HAS_EXTENDED_TYPE,
+				EXTENDED_TYPES.INT_VAR.SINT256,
+				"h".charCodeAt(),
+				"i".charCodeAt(),
+				"g".charCodeAt(),
+				"h".charCodeAt(),
+				0x00, // End of key string
+				0b10000111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b11111111,
+				0b01111111,
+				0x00 // End of Object
+			]));
+			expect(
+				encoder.encode.bind(encoder, {outOfRange: -57896044618658097711785492504343953926634992332820282019728792003956564819969n})
+			).to.throw(SconSerializeError);
+			expect(
+				encoder.encode.bind(encoder, {outOfRange: 57896044618658097711785492504343953926634992332820282019728792003956564819968n})
+			).to.throw(SconSerializeError);
 		});
 	});
 	describe("nested object encoding", function(){
@@ -2114,6 +2294,63 @@ describe("SCON Encoder", function() {
 					HEADER_BYTE.BASE_TYPE_VARIANT |
 					HEADER_BYTE.VALUE_IS_REFERENCE,
 				0 // point to slot 0
+			]));
+		});
+	});
+	describe("date encoding", function(){
+		it("can encode dates with second-resolution", function(){
+			const encoder = new SconEncoder();
+			expect(
+				encoder.encode(new Date("2014-03-31 12:00 AM EDT"))
+			).to.deep.equal(Buffer.from([
+				0x07,
+				0x53,
+				0x43,
+				0x33,
+				BASE_TYPES.INT_VAR | HEADER_BYTE.HAS_EXTENDED_TYPE,
+				EXTENDED_TYPES.INT_VAR.DATE_S,
+				0x85,
+				0x99,
+				0xe3,
+				0xd0,
+				0x40
+			]));
+		});
+		it("can encode dates with millisecond-resolution", function(){
+			const encoder = new SconEncoder();
+			expect(
+				encoder.encode(new Date(1636726678667))
+			).to.deep.equal(Buffer.from([
+				0x07,
+				0x53,
+				0x43,
+				0x33,
+				BASE_TYPES.INT_VAR | HEADER_BYTE.HAS_EXTENDED_TYPE,
+				EXTENDED_TYPES.INT_VAR.DATE_MS,
+				0xaf,
+				0xd1,
+				0xa4,
+				0x8c,
+				0xc9,
+				0x0b
+			]));
+		});
+		it("can work with dates before the beginning of time", function(){
+			const encoder = new SconEncoder();
+			expect(
+				encoder.encode(new Date("1931-12-11 12:00 AM EDT"))
+			).to.deep.equal(Buffer.from([
+				0x07,
+				0x53,
+				0x43,
+				0x33,
+				BASE_TYPES.INT_VAR | HEADER_BYTE.BASE_TYPE_VARIANT | HEADER_BYTE.HAS_EXTENDED_TYPE,
+				EXTENDED_TYPES.INT_VAR.DATE_S,
+				0x84,
+				0xbc,
+				0xd9,
+				0x96,
+				0x40
 			]));
 		});
 	});
