@@ -2277,4 +2277,86 @@ describe("SCON Decoder", function(){
 			expect(decoded).to.deep.equal(Buffer.from("ha"));
 		});
 	});
+	describe("array decoding", function(){
+		it("works", function(){
+			const decoder = new SconDecoder();
+			expect(
+				decoder.decode(Buffer.from([
+					0x07, // Ding!
+					0x53, // S
+					0x43, // C
+					0x33, // 3
+					BASE_TYPES.OBJECT | HEADER_BYTE.BASE_TYPE_VARIANT, // start array
+					0x00 // end array
+				]))
+			).to.deep.equal([]);
+			expect(
+				decoder.decode(Buffer.from([
+					0x07, // Ding!
+					0x53, // S
+					0x43, // C
+					0x33, // 3
+					BASE_TYPES.OBJECT | HEADER_BYTE.BASE_TYPE_VARIANT, // start array
+					BASE_TYPES.INT_VAR, // array value index 0
+					1, // int value 1
+					BASE_TYPES.INT_VAR, // array value index 1
+					2, // int value 2
+					BASE_TYPES.INT_VAR, // array value index 2
+					3, // int value 3
+					0x00 // end arra
+				]))
+			).to.deep.equal([1, 2, 3]);
+		});
+		it("can contain itself", function(){
+			const decoder = new SconDecoder();
+			const decoded = decoder.decode(Buffer.from([
+				0x07, // Ding!
+				0x53, // S
+				0x43, // C
+				0x33, // 3
+				BASE_TYPES.OBJECT |
+					HEADER_BYTE.BASE_TYPE_VARIANT |
+					HEADER_BYTE.IS_REFERENCE_DEFINITION, // start referenced array 0
+				BASE_TYPES.OBJECT | 
+					HEADER_BYTE.BASE_TYPE_VARIANT |
+					HEADER_BYTE.VALUE_IS_REFERENCE, // array value index 0
+				0, // pointer to referenced value 0
+				0x00, // end referenced array 0
+				BASE_TYPES.OBJECT | 
+					HEADER_BYTE.BASE_TYPE_VARIANT |
+					HEADER_BYTE.VALUE_IS_REFERENCE, // root object definition
+				0 // pointer to referenced value 0
+			]));
+			expect(decoded[0]).to.equal(decoded);
+		});
+	});
+	describe("map decoding", function(){
+		it("can decode simple string maps", function(){
+			const decoder = new SconDecoder();
+			expect(
+				decoder.decode(Buffer.from([
+					0x07, // Ding!
+					0x53, // S
+					0x43, // C
+					0x33, // 3
+					BASE_TYPES.OBJECT | HEADER_BYTE.HAS_EXTENDED_TYPE, // Start of root Map object
+					EXTENDED_TYPES.OBJECT.STRING_KEY_MAP,
+					BASE_TYPES.STRING_ZERO_TERM | HEADER_BYTE.BASE_TYPE_VARIANT, // UTF8-encoded string
+					"h".charCodeAt(),
+					"e".charCodeAt(),
+					"l".charCodeAt(),
+					"l".charCodeAt(),
+					"o".charCodeAt(),
+					0x00, // End of key string
+					"w".charCodeAt(),
+					"o".charCodeAt(),
+					"r".charCodeAt(),
+					"l".charCodeAt(),
+					"d".charCodeAt(),
+					0x00, // End of string value
+					0x00 // End of Object
+				]))
+			).to.deep.equal(new Map([["hello", "world"]]));
+		});
+	});
 });
