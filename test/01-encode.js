@@ -2186,7 +2186,23 @@ describe("SCON Encoder", function() {
 				0x00, // end of referenced object
 				BASE_TYPES.OBJECT | HEADER_BYTE.VALUE_IS_REFERENCE, // object will be defined at index 2
 				2 // varint pointer to referenced object
-			]))
+			]));
+			expect(
+				encoder.encode({
+					hello: firstObject
+				})
+			).to.deep.equal(Buffer.from([
+				BASE_TYPES.OBJECT |
+					HEADER_BYTE.IS_REFERENCE_DEFINITION,
+				BASE_TYPES.OBJECT |
+					HEADER_BYTE.KEY_IS_REFERENCE |
+					HEADER_BYTE.VALUE_IS_REFERENCE,
+				0, // pointer to "hello"
+				2, // pointer to firstObject
+				0x00, // end of referenced object
+				BASE_TYPES.OBJECT | HEADER_BYTE.VALUE_IS_REFERENCE, // root value
+				3 // varint pointer to referenced object
+			]));
 		});
 		it("can use previously defined references if specified (explicit ref definitions)", function(){
 			const firstObject = {

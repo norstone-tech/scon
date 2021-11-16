@@ -167,6 +167,59 @@ describe("SCON Decoder", function(){
 				]))
 			).to.deep.equal({hello: "world"});
 		});
+		it("throws when an object doesn't end", function(){
+			const decoder = new SconDecoder();
+			expect(
+				decoder.decode.bind(decoder, Buffer.from([
+					0x07, // Ding!
+					0x53, // S
+					0x43, // C
+					0x33, // 3
+					BASE_TYPES.OBJECT, // Start of root value object
+					BASE_TYPES.STRING_ZERO_TERM | HEADER_BYTE.BASE_TYPE_VARIANT, // UTF8-encoded string
+					"h".charCodeAt(),
+					"e".charCodeAt(),
+					"l".charCodeAt(),
+					"l".charCodeAt(),
+					"o".charCodeAt(),
+					0x00, // End of key string
+					"w".charCodeAt(),
+					"o".charCodeAt(),
+					"r".charCodeAt(),
+					"l".charCodeAt(),
+					"d".charCodeAt(),
+					0x00, // End of string value
+				]))
+			).to.throw(SconTruncateError)
+		});
+		it("ignores potentially unsafe properties", function(){
+			const decoder = new SconDecoder();
+			expect(
+				decoder.decode(Buffer.from([
+					0x07, // Ding!
+					0x53, // S
+					0x43, // C
+					0x33, // 3
+					BASE_TYPES.OBJECT, // Start of root value object
+					BASE_TYPES.STRING_ZERO_TERM | HEADER_BYTE.BASE_TYPE_VARIANT, // UTF8-encoded string
+					"t".charCodeAt(),
+					"o".charCodeAt(),
+					"S".charCodeAt(),
+					"t".charCodeAt(),
+					"r".charCodeAt(),
+					"i".charCodeAt(),
+					"n".charCodeAt(),
+					"g".charCodeAt(),
+					0x00, // End of key string
+					"e".charCodeAt(),
+					"v".charCodeAt(),
+					"i".charCodeAt(),
+					"l".charCodeAt(),
+					0x00, // End of string value
+					0x00 // End of Object
+				]))
+			).to.deep.equal({});
+		});
 		it("can decode strings with null bytes in them", function(){
 			const decoder = new SconDecoder();
 			expect(
@@ -594,6 +647,7 @@ describe("SCON Decoder", function(){
 				]))
 			).to.throw(SconReferenceError);
 		});
+		
 	});
 	describe("undefined value decoding", function(){
 		it("returns undefined when only encountering an EOF", function(){
@@ -2330,6 +2384,63 @@ describe("SCON Decoder", function(){
 			expect(decoded[0]).to.equal(decoded);
 		});
 	});
+	describe("set decoding", function(){
+		it("works", function(){
+			const decoder = new SconDecoder();
+			expect(
+				decoder.decode(Buffer.from([
+					0x07, // Ding!
+					0x53, // S
+					0x43, // C
+					0x33, // 3
+					BASE_TYPES.OBJECT | HEADER_BYTE.BASE_TYPE_VARIANT | HEADER_BYTE.HAS_EXTENDED_TYPE, // start array
+					EXTENDED_TYPES.OBJECT.SET,
+					0x00 // end array
+				]))
+			).to.be.instanceOf(Set);
+			expect(
+				decoder.decode(Buffer.from([
+					0x07, // Ding!
+					0x53, // S
+					0x43, // C
+					0x33, // 3
+					BASE_TYPES.OBJECT | HEADER_BYTE.BASE_TYPE_VARIANT | HEADER_BYTE.HAS_EXTENDED_TYPE, // start array
+					EXTENDED_TYPES.OBJECT.SET,
+					BASE_TYPES.INT_VAR, // array value index 0
+					1, // int value 1
+					BASE_TYPES.INT_VAR, // array value index 1
+					2, // int value 2
+					BASE_TYPES.INT_VAR, // array value index 2
+					3, // int value 3
+					0x00 // end arra
+				]))
+			).to.deep.equal(new Set([1, 2, 3]));
+		});
+		it("can contain itself", function(){
+			const decoder = new SconDecoder();
+			const decoded = decoder.decode(Buffer.from([
+				0x07, // Ding!
+				0x53, // S
+				0x43, // C
+				0x33, // 3
+				BASE_TYPES.OBJECT |
+					HEADER_BYTE.BASE_TYPE_VARIANT |
+					HEADER_BYTE.IS_REFERENCE_DEFINITION |
+					HEADER_BYTE.HAS_EXTENDED_TYPE, // start referenced array 0
+				EXTENDED_TYPES.OBJECT.SET,
+				BASE_TYPES.OBJECT | 
+					HEADER_BYTE.BASE_TYPE_VARIANT |
+					HEADER_BYTE.VALUE_IS_REFERENCE, // array value index 0
+				0, // pointer to referenced value 0
+				0x00, // end referenced array 0
+				BASE_TYPES.OBJECT | 
+					HEADER_BYTE.BASE_TYPE_VARIANT |
+					HEADER_BYTE.VALUE_IS_REFERENCE, // root object definition
+				0 // pointer to referenced value 0
+			]));
+			expect(decoded).to.contain(decoded);
+		});
+	});
 	describe("map decoding", function(){
 		it("can decode simple string maps", function(){
 			const decoder = new SconDecoder();
@@ -2357,6 +2468,415 @@ describe("SCON Decoder", function(){
 					0x00 // End of Object
 				]))
 			).to.deep.equal(new Map([["hello", "world"]]));
+			expect(
+				decoder.decode(Buffer.from([
+					0x07, // Ding!
+					0x53, // S
+					0x43, // C
+					0x33, // 3
+					BASE_TYPES.OBJECT | HEADER_BYTE.HAS_EXTENDED_TYPE, // Start of root Map object
+					EXTENDED_TYPES.OBJECT.STRING_KEY_MAP_ALT,
+					BASE_TYPES.STRING_ZERO_TERM | HEADER_BYTE.BASE_TYPE_VARIANT, // UTF8-encoded string
+					"h".charCodeAt(),
+					"e".charCodeAt(),
+					"l".charCodeAt(),
+					"l".charCodeAt(),
+					"o".charCodeAt(),
+					0x00, // End of key string
+					"w".charCodeAt(),
+					"o".charCodeAt(),
+					"r".charCodeAt(),
+					"l".charCodeAt(),
+					"d".charCodeAt(),
+					0x00, // End of string value
+					0x00 // End of Object
+				]))
+			).to.deep.equal(new Map([["hello", "world"]]));
+		});
+		it("can decode maps which contain themselves", function(){
+			const decoder = new SconDecoder();
+			/**@type {Map<string, Map>} */
+			const decoded = decoder.decode(Buffer.from([
+				0x07, // Ding!
+				0x53, // S
+				0x43, // C
+				0x33, // 3
+				BASE_TYPES.OBJECT | HEADER_BYTE.IS_REFERENCE_DEFINITION | HEADER_BYTE.HAS_EXTENDED_TYPE, // Start of referenced object 0
+				EXTENDED_TYPES.OBJECT.STRING_KEY_MAP,
+				// start of "cir" property definition (extended type doesn't need to be defined here)
+				BASE_TYPES.OBJECT | HEADER_BYTE.VALUE_IS_REFERENCE, 
+				"c".charCodeAt(),
+				"i".charCodeAt(),
+				"r".charCodeAt(),
+				0x00, // End of key string
+				0, // Varint pointer to object 0
+				0x00, // end of referenced object 0
+				BASE_TYPES.OBJECT | HEADER_BYTE.VALUE_IS_REFERENCE, // root object definition
+				0 // Varint pointer to object 0
+			]));
+			expect(
+				decoded.get("cir")
+			).to.equal(decoded);
+		});
+		it("can decode maps with any key type", function(){
+			const decoder = new SconDecoder();
+			expect(
+				decoder.decode(Buffer.from([
+					0x07, // Ding!
+					0x53, // S
+					0x43, // C
+					0x33, // 3
+					// Start of root Map object (array of key+value pairs)
+					BASE_TYPES.OBJECT | HEADER_BYTE.BASE_TYPE_VARIANT | HEADER_BYTE.HAS_EXTENDED_TYPE, 
+					EXTENDED_TYPES.OBJECT.ANY_KEY_MAP,
+
+					// start of first key+value pair
+					BASE_TYPES.OBJECT | HEADER_BYTE.BASE_TYPE_VARIANT,
+					BASE_TYPES.INT_VAR, // key is an int
+					1, // key is 1
+					BASE_TYPES.STRING_ZERO_TERM | HEADER_BYTE.BASE_TYPE_VARIANT, // value is a utf8 string
+					"o".charCodeAt(),
+					"n".charCodeAt(),
+					"e".charCodeAt(),
+					0x00, // end of value string
+					0x00, // end of first key+value pair
+
+					// start of second key+value pair
+					BASE_TYPES.OBJECT | HEADER_BYTE.BASE_TYPE_VARIANT,
+					BASE_TYPES.INT_VAR, // key is an int
+					2, // key is 2
+					BASE_TYPES.STRING_ZERO_TERM | HEADER_BYTE.BASE_TYPE_VARIANT, // value is a utf8 string
+					"t".charCodeAt(),
+					"w".charCodeAt(),
+					"o".charCodeAt(),
+					0x00, // end of value string
+					0x00, // end of second key+value pair
+
+					// start of third key+value pair
+					BASE_TYPES.OBJECT | HEADER_BYTE.BASE_TYPE_VARIANT,
+					BASE_TYPES.INT_VAR, // key is an int
+					3, // key is 3
+					BASE_TYPES.STRING_ZERO_TERM | HEADER_BYTE.BASE_TYPE_VARIANT, // value is a utf8 string
+					"t".charCodeAt(),
+					"h".charCodeAt(),
+					"r".charCodeAt(),
+					"e".charCodeAt(),
+					"e".charCodeAt(),
+					0x00, // end of value string
+					0x00, // end of third key+value pair
+
+					// start of fourth key+value pair
+					BASE_TYPES.OBJECT | HEADER_BYTE.BASE_TYPE_VARIANT,
+					BASE_TYPES.STRING_ZERO_TERM | HEADER_BYTE.BASE_TYPE_VARIANT, // key is a utf8 string
+					"4".charCodeAt(),
+					0x00, // end of key string
+					BASE_TYPES.STRING_ZERO_TERM | HEADER_BYTE.BASE_TYPE_VARIANT, // value is a utf8 string
+					"f".charCodeAt(),
+					"o".charCodeAt(),
+					"u".charCodeAt(),
+					"r".charCodeAt(),
+					0x00, // end of value string
+					0x00, // end of fourth key+value pair
+					0x00 // End of root array
+				]))
+			).to.deep.equal(
+				new Map([
+					[1, "one"],
+					[2, "two"],
+					[3, "three"],
+					["4", "four"]
+				])
+			);
+		});
+	});
+	describe("cross-object referencing", function(){
+		it("can use previously defined references if specified", function(){
+			const decoder = new SconDecoder({
+				keepReferenceValues: true,
+				magicNumber: false
+			});
+			const firstObject = decoder.decode(Buffer.from([
+				BASE_TYPES.STRING_ZERO_TERM | HEADER_BYTE.BASE_TYPE_VARIANT | HEADER_BYTE.IS_REFERENCE_DEFINITION,
+				"h".charCodeAt(),
+				"e".charCodeAt(),
+				"l".charCodeAt(),
+				"l".charCodeAt(),
+				"o".charCodeAt(),
+				0x00,
+				BASE_TYPES.STRING_ZERO_TERM | HEADER_BYTE.BASE_TYPE_VARIANT | HEADER_BYTE.IS_REFERENCE_DEFINITION,
+				"w".charCodeAt(),
+				"o".charCodeAt(),
+				"r".charCodeAt(),
+				"l".charCodeAt(),
+				"d".charCodeAt(),
+				0x00,
+				BASE_TYPES.OBJECT | HEADER_BYTE.IS_REFERENCE_DEFINITION, // object will be defined at index 2
+				BASE_TYPES.STRING_ZERO_TERM |
+					HEADER_BYTE.BASE_TYPE_VARIANT |
+					HEADER_BYTE.KEY_IS_REFERENCE |
+					HEADER_BYTE.VALUE_IS_REFERENCE,
+				0, // varint pointer to "hello"
+				1, // varint pointer to world
+				0x00, // end of referenced object
+				BASE_TYPES.OBJECT | HEADER_BYTE.VALUE_IS_REFERENCE, // object will be defined at index 2
+				2 // varint pointer to referenced object
+			]));
+			expect(firstObject).to.deep.equal({hello: "world"});
+			const secondObject = decoder.decode(Buffer.from([
+				BASE_TYPES.OBJECT,
+				BASE_TYPES.OBJECT |
+					HEADER_BYTE.KEY_IS_REFERENCE |
+					HEADER_BYTE.VALUE_IS_REFERENCE,
+				0, // pointer to "hello"
+				2, // pointer to firstObject
+				0x00 // end of root object
+			]));
+			expect(secondObject).to.deep.equal({hello: {hello: "world"}});
+			expect(secondObject.hello).to.equal(firstObject);
+		});
+		it("can use previously defined references if specified (explicit ref definitions)", function(){
+			const decoder = new SconDecoder({
+				keepReferenceValues: true,
+				magicNumber: false
+			});
+			const firstObject = decoder.decode(Buffer.from([
+				BASE_TYPES.STRING_ZERO_TERM |
+					HEADER_BYTE.BASE_TYPE_VARIANT |
+					HEADER_BYTE.IS_REFERENCE_DEFINITION |
+					HEADER_BYTE.KEY_IS_REFERENCE_SLOT,
+				1, // TODO: Testing these defined out of order since that's how they're encoded rn
+				"h".charCodeAt(),
+				"e".charCodeAt(),
+				"l".charCodeAt(),
+				"l".charCodeAt(),
+				"o".charCodeAt(),
+				0x00,
+				BASE_TYPES.STRING_ZERO_TERM |
+					HEADER_BYTE.BASE_TYPE_VARIANT |
+					HEADER_BYTE.IS_REFERENCE_DEFINITION |
+					HEADER_BYTE.KEY_IS_REFERENCE_SLOT,
+				2,
+				"w".charCodeAt(),
+				"o".charCodeAt(),
+				"r".charCodeAt(),
+				"l".charCodeAt(),
+				"d".charCodeAt(),
+				0x00,
+				BASE_TYPES.OBJECT |
+					HEADER_BYTE.IS_REFERENCE_DEFINITION |
+					HEADER_BYTE.KEY_IS_REFERENCE_SLOT,
+				0,
+				BASE_TYPES.STRING_ZERO_TERM |
+					HEADER_BYTE.BASE_TYPE_VARIANT |
+					HEADER_BYTE.KEY_IS_REFERENCE |
+					HEADER_BYTE.VALUE_IS_REFERENCE,
+				1, // varint pointer to "hello"
+				2, // varint pointer to world
+				0x00, // end of referenced object
+				BASE_TYPES.OBJECT | HEADER_BYTE.VALUE_IS_REFERENCE, // object will be defined at index 2
+				0 // varint pointer to referenced object
+			]));
+			expect(firstObject).to.deep.equal({hello: "world"});
+			const secondObject = decoder.decode(Buffer.from([
+				BASE_TYPES.OBJECT |
+					HEADER_BYTE.IS_REFERENCE_DEFINITION |
+					HEADER_BYTE.KEY_IS_REFERENCE_SLOT,
+				3,
+				BASE_TYPES.OBJECT |
+					HEADER_BYTE.KEY_IS_REFERENCE |
+					HEADER_BYTE.VALUE_IS_REFERENCE,
+				1, // pointer to "hello"
+				0, // pointer to firstObject
+				0x00, // end of referenced object
+				BASE_TYPES.OBJECT | HEADER_BYTE.VALUE_IS_REFERENCE, // root value
+				3 // varint pointer to referenced object
+			]));
+			expect(secondObject).to.deep.equal({hello: {hello: "world"}});
+			expect(secondObject.hello).to.equal(firstObject);
+		});
+		it("can \"forget\" previous reference definitions if specified", function(){
+			const decoder = new SconDecoder({
+				keepReferenceValues: true,
+				magicNumber: false
+			});
+			expect(
+				decoder.decode(Buffer.from([
+					BASE_TYPES.STRING_ZERO_TERM |
+						HEADER_BYTE.BASE_TYPE_VARIANT |
+						HEADER_BYTE.IS_REFERENCE_DEFINITION,
+					"a".charCodeAt(),
+					0x00,
+					BASE_TYPES.STRING_ZERO_TERM |
+						HEADER_BYTE.BASE_TYPE_VARIANT |
+						HEADER_BYTE.VALUE_IS_REFERENCE,
+					0 // point to slot 0
+				]))
+			).to.equal("a");
+			expect(
+				decoder.decode(Buffer.from([
+					BASE_TYPES.STRING_ZERO_TERM |
+						HEADER_BYTE.BASE_TYPE_VARIANT |
+						HEADER_BYTE.VALUE_IS_REFERENCE,
+					0 // point to slot 0
+				]))
+			).to.equal("a");
+			decoder.options.keepReferenceValues = false;
+			expect(
+				decoder.decode.bind(decoder, Buffer.from([
+					BASE_TYPES.STRING_ZERO_TERM |
+						HEADER_BYTE.BASE_TYPE_VARIANT |
+						HEADER_BYTE.VALUE_IS_REFERENCE,
+					0 // point to slot 0
+				]))
+			).to.throw(SconReferenceError);
+		});
+	});
+	describe("multi-buffer decode", function(){
+		it("works, probably", function(){
+			const decoder = new SconDecoder();
+			expect(
+				decoder.decodePartial(Buffer.from([
+					0x07, // Ding!
+					0x53, // S
+					0x43, // C
+					0x33, // 3
+					BASE_TYPES.OBJECT, // Start of root value object
+					BASE_TYPES.STRING_ZERO_TERM | HEADER_BYTE.BASE_TYPE_VARIANT, // UTF8-encoded string
+					"h".charCodeAt(),
+					"e".charCodeAt(),
+					"l".charCodeAt(),
+				]))
+			).to.be.undefined;
+			expect(
+				decoder.decodePartial(Buffer.from([
+					"l".charCodeAt(),
+					"o".charCodeAt(),
+					0x00, // End of key string
+					"w".charCodeAt(),
+					"o".charCodeAt(),
+					"r".charCodeAt(),
+					"l".charCodeAt(),
+					"d".charCodeAt(),
+					0x00 // End of string value
+				]))
+			).to.be.undefined;
+			expect(
+				decoder.decodePartial(Buffer.from([
+					0x00 // End of Object
+				]))
+			).to.deep.equal({hello: "world"});
+		});
+		it("works, probably, with Uint8Arrays", function(){
+			const decoder = new SconDecoder();
+			expect(
+				decoder.decodePartial(new Uint8Array([
+					0x07, // Ding!
+					0x53, // S
+					0x43, // C
+					0x33, // 3
+					BASE_TYPES.OBJECT, // Start of root value object
+					BASE_TYPES.STRING_ZERO_TERM | HEADER_BYTE.BASE_TYPE_VARIANT, // UTF8-encoded string
+					"h".charCodeAt(),
+					"e".charCodeAt(),
+					"l".charCodeAt(),
+				]))
+			).to.be.undefined;
+			expect(
+				decoder.decodePartial(new Uint8Array([
+					"l".charCodeAt(),
+					"o".charCodeAt(),
+					0x00, // End of key string
+					"w".charCodeAt(),
+					"o".charCodeAt(),
+					"r".charCodeAt(),
+					"l".charCodeAt(),
+					"d".charCodeAt(),
+					0x00 // End of string value
+				]))
+			).to.be.undefined;
+			expect(
+				decoder.decodePartial(new Uint8Array([
+					0x00 // End of Object
+				]))
+			).to.deep.equal({hello: "world"});
+		});
+		it("doesn't allow a full decode while doing a partial decode", function(){
+			const decoder = new SconDecoder();
+			expect(
+				decoder.decodePartial(Buffer.from([
+					0x07, // Ding!
+					0x53, // S
+					0x43, // C
+					0x33, // 3
+					BASE_TYPES.OBJECT, // Start of root value object
+					BASE_TYPES.STRING_ZERO_TERM | HEADER_BYTE.BASE_TYPE_VARIANT, // UTF8-encoded string
+					"h".charCodeAt(),
+					"e".charCodeAt(),
+					"l".charCodeAt(),
+				]))
+			).to.be.undefined;
+			expect(
+				decoder.decode.bind(decoder, Buffer.from([
+					0x07, // Ding!
+					0x53, // S
+					0x43, // C
+					0x33, // 3
+					BASE_TYPES.OBJECT, // Start of root value object
+					0x00 // end of root object
+				]))
+			).to.throw(SconParseError);
+		});
+		it("can use previously defined references accross multiple partial decodes", function(){
+			const decoder = new SconDecoder({
+				keepReferenceValues: true,
+				magicNumber: false
+			});
+			expect(
+				decoder.decodePartial(Buffer.from([
+					BASE_TYPES.STRING_ZERO_TERM |
+						HEADER_BYTE.BASE_TYPE_VARIANT |
+						HEADER_BYTE.IS_REFERENCE_DEFINITION,
+					"a".charCodeAt(),
+					0x00,
+					BASE_TYPES.STRING_ZERO_TERM |
+						HEADER_BYTE.BASE_TYPE_VARIANT |
+						HEADER_BYTE.VALUE_IS_REFERENCE
+				]))
+			).to.be.undefined;
+			expect(
+				decoder.decodePartial(Buffer.from([
+					0 // point to slot 0
+				]))
+			).to.equal("a");
+			expect(
+				decoder.decodePartial(Buffer.from([
+					BASE_TYPES.STRING_ZERO_TERM |
+						HEADER_BYTE.BASE_TYPE_VARIANT |
+						HEADER_BYTE.VALUE_IS_REFERENCE,
+					0 // point to slot 0
+				]))
+			).to.equal("a");
+		});
+		it("passes on non-truncated related errors", function(){
+			const decoder = new SconDecoder();
+			expect(
+				decoder.decodePartial.bind(decoder, Buffer.from([
+					0x07, // Ding!
+					0x53, // S
+					0x43, // C
+					0x33, // 3
+					BASE_TYPES.INT_VAR,
+					// 2 ** 53, greater than Number.MAX_SAFE_INTEGER
+					0b10010000,
+					0b10000000,
+					0b10000000,
+					0b10000000,
+					0b10000000,
+					0b10000000,
+					0b10000000,
+					0b00000000
+				]))
+			).to.throw(SconParseError);
 		});
 	});
 });
