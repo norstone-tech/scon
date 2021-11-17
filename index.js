@@ -12,5 +12,6 @@ module.exports = {
 	...require("./lib/conf"),
 	...require("./lib/error"),
 	...require("./lib/decode"),
-	...require("./lib/encode")
+	...require("./lib/encode"),
+	...require("./lib/encode-fast")
 };

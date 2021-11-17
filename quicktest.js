@@ -1,8 +1,9 @@
 // eslint-disable-next-line node/no-unpublished-require
 const Benchmark = require("benchmark");
 const suite = new Benchmark.Suite("SCON/JSON comparison");
-const {SconEncoder, SconDecoder} = require("./");
-const se = new SconEncoder({referencedStrings: true});
+const {FastSconEncoder, SconEncoder, SconDecoder} = require("./");
+const se = new SconEncoder();
+const fse = new SconEncoder();
 const sd = new SconDecoder();
 const testVal = {
 	hello: "world",
@@ -10,12 +11,14 @@ const testVal = {
 	number: 1337,
 	float: 13.37
 };
+
 for(let i = 0; i < 500; i += 1){
 	testVal[i.toString(36)] = Math.random() * 10000 | 0;
-	// testVal[i.toString(36)] = Math.random() * 10000;
-	testVal[(i + 500).toString(36)] = Math.random().toString(36);
-	testVal[(i + 1000).toString(36)] = "test";
+	// testVal[i.toString(36)] = Math.random();
+	 testVal[(i + 500).toString(36)] = Math.random().toString(36);
+	// testVal[(i + 1000).toString(36)] = "test";
 }
+
 const encodedJson = JSON.stringify(testVal);
 const encodedScon = se.encode(testVal);
 suite.add("JSON Encode", () => {
@@ -25,6 +28,10 @@ suite.add("JSON Encode", () => {
 suite.add("SCON Encode", () => {
 	// eslint-disable-next-line no-unused-vars
 	const something = se.encode(testVal);
+});
+suite.add("SCON Encode (fast)", () => {
+	// eslint-disable-next-line no-unused-vars
+	const something = fse.encode(testVal);
 });
 
 suite.add("JSON Decode", () => {
